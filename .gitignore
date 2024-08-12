@@ -3,3 +3,4 @@ dist
 /DATA
 .DS_Store
 .env
+secrets/
