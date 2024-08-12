@@ -1,0 +1,42 @@
+{
+  "name": "did-dht-tools",
+  "version": "1.0.0",
+  "description": "Some tools to help ppl with one various Web5 tings",
+  "scripts": {
+    "create-did": "tsx create-did-dht.ts",
+    "build": "rimraf dist && rimraf dist/esm && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/bnonni/did-dht-tools.git"
+  },
+  "author": "Bryan Nonni (https://github.com/bnonni)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bnonni/did-dht-tools/issues"
+  },
+  "homepage": "https://github.com/bnonni/did-dht-tools#readme",
+  "dependencies": {
+    "@dcx-protocol/common": "^0.1.0",
+    "@web5/agent": "^0.4.1",
+    "@web5/api": "^0.10.0",
+    "@web5/common": "^1.0.0",
+    "@web5/credentials": "^1.0.0",
+    "@web5/crypto": "^1.0.0",
+    "@web5/crypto-aws-kms": "^1.0.0",
+    "@web5/dids": "^1.0.0",
+    "@web5/identity-agent": "^0.3.1",
+    "@web5/proxy-agent": "^0.3.1",
+    "@web5/user-agent": "^0.4.1",
+    "ed25519-keygen": "^0.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.6.2",
+    "@typescript-eslint/eslint-plugin": "^7.16.1",
+    "@typescript-eslint/parser": "^7.16.1",
+    "dotenv": "^16.4.5",
+    "eslint": "^8.57.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.2.2"
+  }
+}
