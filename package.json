@@ -5,7 +5,8 @@
   "description": "Some tools to help ppl with one various Web5 tings",
   "scripts": {
     "start": "npm run build && node dist/index.js",
-    "build": "rimraf dist && rimraf dist/esm && tsc"
+    "build": "rimraf dist && rimraf dist/esm && tsc",
+    "install:cli": "sh install-cli.sh"
   },
   "repository": {
     "type": "git",
