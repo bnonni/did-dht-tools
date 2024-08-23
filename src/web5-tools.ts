@@ -7,30 +7,61 @@ import { Did } from './did/index.js';
 import { Dwn } from './dwn/index.js';
 import { Vc } from './vc/index.js';
 
-program
-  .requiredOption('-p, --primitive <did|vc|dwn>', 'core Web5 primitive to interact with')
-  .requiredOption('-a, --action <did:{create,publish} | vc:{create,verify} | dwn:{create,read,update,delete}>', 'action to take on that core primitive');
+const validateAction = (value: string) => {
+  const [primitive, action] = value.split(':');
+  if(primitive === 'did' && !['create', 'publish', 'recover'].includes(action)) {
+    console.error('Invalid action for did: must be one of create, publish, or recover');
+    process.exit(1);
+  }
+  if(primitive === 'vc' && !['create', 'verify'].includes(action)) {
+    console.error('Invalid action for vc: must be one of create or verify');
+    process.exit(1);
+  }
+  if(primitive === 'dwn' && !['create', 'read', 'update', 'delete'].includes(action)) {
+    console.error('Invalid action for dwn: must be one of create, read, update, or delete');
+    process.exit(1);
+  }
+  return value;
+};
 
+const validateParseOptions = (value: string) => {
+  try {
+    return JSON.parse(value);
+  } catch (error) {
+    console.error('Invalid JSON for -o, --options flag');
+    process.exit(1);
+  }
+};
+
+program
+  .requiredOption('-p, --primitive <did|vc|dwn>', 'Web5 primitive to interact with', 'did')
+  .requiredOption('-a, --action <create|publish|recover|verify|read|update|delete>', 'action to take on Web5 primitive', validateAction, 'create')
+  .option('-o, --options <json>', 'options to pass to the did creation', validateParseOptions, { dwnEndpoints: ['https://dwn.tbddev.org/beta'] });
 program.parse();
 
-const options = program.opts();
+const opts = program.opts();
 
-const primitive = options.primitive.trim().toLowerCase();
-const action = options.action.trim().toLowerCase();
+const primitive = opts.primitive.trim().toLowerCase();
+const action = opts.action.trim().toLowerCase();
+const options = opts.options;
 
+console.log(primitive, action, options);
 switch(primitive) {
   case 'did':
     switch(action) {
       case 'create':
-        Logger.log('Creating a DID');
-        await Did.create();
+        await Did.create(options);
         break;
       case 'publish':
         Logger.log('Publishing a DID');
         await Did.publish();
         break;
+      case 'recover':
+        Logger.log('Publishing a DID');
+        await Did.publish();
+        break;
       default:
-        Logger.log('Invalid action for did: must be one of create or publish');
+        Logger.log('Invalid action for did: must be one of create, publish, or recover');
     }
     break;
   case 'vc':
