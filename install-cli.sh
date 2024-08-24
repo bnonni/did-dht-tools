@@ -16,7 +16,7 @@ fi
 
 
 echo "Installing tool5 to $RC_FILE"
-echo $'\n'"alias tool5=\"node $PWD/dist/web5-tools.js\"" >> "$RC_FILE"
+echo $'\n'"alias tool5=\"node $PWD/dist/tool5.js\"" >> "$RC_FILE"
 source "$RC_FILE"
 
 echo "tool5 cli successfully installed"
