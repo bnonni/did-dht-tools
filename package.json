@@ -4,8 +4,9 @@
   "type": "module",
   "description": "Some tools to help ppl with one various Web5 tings",
   "scripts": {
-    "start": "npm run build && node dist/index.js",
+    "start": "npm run build && node dist/web5-tools.js",
     "build": "rimraf dist && rimraf dist/esm && tsc",
+    "did:create": "npm run build && node dist/web5-tools.js -p did -a create",
     "install:cli": "sh install-cli.sh"
   },
   "repository": {
