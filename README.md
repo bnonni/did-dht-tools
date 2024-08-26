@@ -12,8 +12,8 @@ To implement Web5 into your project or to build a DWA (decentralized web app) wi
 
 1. Clone repo & install deps
 ```bash
-git clone git@github.com:bnonni/web5-tools.git
-cd web5-tools
+git clone git@github.com:bnonni/dweb-tool5.git
+cd dweb-tool5
 npm install
 ```
 2. Build the cli
