@@ -1,27 +1,36 @@
-# DWeb Tool5
+# Tool5
 
-A simple typescript cli to simplify interacting with Web5 primitives.
+A simple typescript cli for interacting with tbd web5-js.
 
 ## Summary
 
-This repo is meant to be instructional. Use the code and cli to experiement with interacting with the core Web5 primitives: DIDs, VCs, and DWNs.
-This repo is not meant to be a substitute for the Web5-js library. It leverages the Web5-js library to interact with the primitives.
-To implement Web5 into your project or to build a DWA (decentralized web app) with Web5, visit the TBD web5-js repo: https://github.com/TBD54566975/web5-js
+This repo is meant to be instructional. Use the code and cli to experiement with interacting with the core web5-js primitives: DIDs, VCs, DWNs.
+This repo is not meant to be a substitute for the web5-js library. It exposes a simple cli interface that is using the web5-js library "under the hood."
+To add web5 to your project or to build a DWA (decentralized web app) with web5, visit the tbd web5-js repo: https://github.com/TBD54566975/web5-js
 
-## Usage
+## Quick Install
 
-1. Clone repo & install deps
+To install `tool5`, run the following commands
 ```bash
-git clone git@github.com:bnonni/dweb-tool5.git
-cd dweb-tool5
-npm install
+git clone git@github.com:bnonni/tool5.git
+cd tool5
+npm run install:cli
+tool5 -h
 ```
-2. Build the cli
+
+## Step-by-step Install
+
+1. Clone
 ```bash
-npm run build
+git clone git@github.com:bnonni/tool5.git && cd tool5
 ```
-3. Install the cli locally (optional). This will install terminal command called `tool5`. Exclusive to bash or zsh shells.
+2. Install dependencies & build project
 ```bash
+npm install && npm run build
+```
+3. Install cli (optional)
+```bash
+# install the `tool5` command into global env
 npm run install:cli
 ```
 4. Run `tool5` help menu
