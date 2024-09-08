@@ -1,5 +1,4 @@
-import dotenv from 'dotenv';
-dotenv.config();
+#!/usr/bin/env node
 
 import { Logger } from '@dcx-protocol/common';
 import { program } from 'commander';
