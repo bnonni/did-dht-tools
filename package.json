@@ -1,8 +1,8 @@
 {
-  "name": "did-dht-tools",
+  "name": "tool5",
   "version": "1.0.0",
   "type": "module",
-  "description": "Some tools to help ppl with one various Web5 tings",
+  "description": "CLI tools for interacting with Web5",
   "scripts": {
     "start": "npm run build && node dist/web5-tools.js",
     "build": "rimraf dist && rimraf dist/esm && tsc",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/bnonni/did-dht-tools.git"
+    "url": "git+ssh://git@github.com/bnonni/tool5.git"
   },
   "author": "Bryan Nonni (https://github.com/bnonni)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/bnonni/did-dht-tools/issues"
+    "url": "https://github.com/bnonni/tool5/issues"
   },
-  "homepage": "https://github.com/bnonni/did-dht-tools#readme",
+  "homepage": "https://github.com/bnonni/tool5#readme",
   "dependencies": {
     "@dcx-protocol/common": "^0.1.0",
     "@web5/agent": "^0.4.1",
