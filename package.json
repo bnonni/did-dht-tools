@@ -13,7 +13,7 @@
     "build": "npm run clean && tsc && mv dist/tool5.js dist/tool5.mjs",
     "did:create": "npm run build && node dist/web5-tools.js -p did -a create",
     "install:cli": "sh install-cli.sh",
-    "outdated:update": "ncu --install always"
+    "update:outdated": "ncu --install always -u"
   },
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
   "homepage": "https://github.com/bnonni/tool5#readme",
   "dependencies": {
     "@dcx-protocol/common": "^7.0.0",
-    "@web5/agent": "^0.4.1",
+    "@web5/agent": "^0.7.1",
     "@web5/api": "^0.10.0",
     "@web5/common": "^1.0.2",
     "@web5/credentials": "^1.1.1",

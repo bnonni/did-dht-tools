@@ -16,7 +16,7 @@ export class Did {
 
     const agent = await Web5UserAgent.create({ dataPath: `DATA/${dataPath}/AGENT` });
     if(await agent.firstLaunch()) {
-      const recoveryPhrase = await agent.initialize({ password });
+      const recoveryPhrase = await agent.initialize({ password, dwnEndpoints });
       Logger.info('New recovery phrase created!', recoveryPhrase);
       await FileSystem.write(`${newOutDir}/recovery-phrase.key`, recoveryPhrase!);
     }
