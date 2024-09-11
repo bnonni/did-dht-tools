@@ -28,6 +28,9 @@ switch(primitive) {
         Logger.log('Publishing a DID');
         await Did.publish();
         break;
+      case 'resolve':
+        Did.resolve();
+        break;
       default:
         Logger.log('Invalid action for did: must be one of create or publish');
     }

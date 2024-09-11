@@ -1,5 +1,6 @@
 import { FileSystem, Logger, Mnemonic } from '@dcx-protocol/common';
 import { Web5 } from '@web5/api';
+import { DidDht, DidResolutionOptions } from '@web5/dids';
 import { Web5UserAgent } from '@web5/user-agent';
 import crypto from 'crypto';
 import { mkdir } from 'fs/promises';
@@ -37,5 +38,10 @@ export class Did {
 
   public static async publish() {
     throw new Error('Not implemented');
+  }
+
+  public static async resolve(didUri: string, options?: DidResolutionOptions) {
+    options ??= {};
+    DidDht.resolve(didUri, options);
   }
 }
