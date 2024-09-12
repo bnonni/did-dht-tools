@@ -8,6 +8,7 @@ TOOL5_JS="$DIST/tool5.js"
 NODE_MODULES="$PWD/node_modules/"
 SHELL_FILE=""
 FORCE=false
+NODE_HOME=`command -v node`
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -70,7 +71,7 @@ install_tool5 () {
     echo "Installing tool5 ..."
     mv "$TOOL5_JS" "$TOOL5"
     chmod u+x "$TOOL5"
-    echo $'\n'"alias tool5=\"node $TOOL5\"" >> "$SHELL_FILE"
+    echo $'\n'"alias tool5=\"$NODE_HOME $TOOL5\"" >> "$SHELL_FILE"
     source "$SHELL_FILE"
     echo "Installed tool5 successfully!"
     tool5 --help

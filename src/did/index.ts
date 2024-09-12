@@ -1,43 +1,38 @@
-import { FileSystem, Logger, Mnemonic } from '@dcx-protocol/common';
-import { Web5 } from '@web5/api';
-import { DidDht, DidResolutionOptions } from '@web5/dids';
-import { Web5UserAgent } from '@web5/user-agent';
+import { FileSystem, Logger } from '@dcx-protocol/common';
+import { BearerDid, DidDht, DidResolutionOptions } from '@web5/dids';
 import crypto from 'crypto';
 import { mkdir } from 'fs/promises';
 
 export class Did {
-
-  public static async create() {
-    const password = process.env.PASSWORD ?? Mnemonic.createPassword();
-    const dwnEndpoints = process.env.DWN_ENDPOINTS?.split(',') ?? ['https://dwn.tbddev.org/beta'];
-
-    const dataPath = crypto.randomUUID().toUpperCase();
-    const newOutDir = `out/${dataPath}`;
-    await mkdir(newOutDir, {recursive: true});
-
-    const agent = await Web5UserAgent.create({ dataPath: `DATA/${dataPath}/AGENT` });
-    if(await agent.firstLaunch()) {
-      const recoveryPhrase = await agent.initialize({ password, dwnEndpoints });
-      Logger.info('New recovery phrase created!', recoveryPhrase);
-      await FileSystem.write(`${newOutDir}/recovery-phrase.key`, recoveryPhrase!);
+  public static async create(dwnEndpoint?: string, dataPath?: string) {
+    dwnEndpoint ??= 'https://dwn.tbddev.org/beta';
+    dataPath ??= `out/${crypto.randomUUID().toUpperCase()}`;
+    if(dataPath){
+      await mkdir(dataPath, { recursive: true });
     }
-    await agent.start({ password });
-    const { web5 } = await Web5.connect({ agent, password, didCreateOptions: { dwnEndpoints } });
-
-    Logger.info('New did created!');
-    await FileSystem.write(`${newOutDir}/did.json`, JSON.stringify(web5.agent.agentDid.document, null, 2));
-
-    const portableDid = await web5.agent.agentDid.export();
-    Logger.info('New portable did exported!');
-    await FileSystem.write(`${newOutDir}/portable-did.json`, JSON.stringify(portableDid, null, 2));
-
-    Logger.info(`New did created and exported to directory ${newOutDir}!`);
-    Logger.info('Keep your recovery phrase and portable DID private and safe!');
-    Logger.info('Host your did.json in public location (e.g. yourdomain.com/.well-known/did.json) to share your DID with others.');
+    const bearerDid = await DidDht.create();
+    bearerDid.document.service = [
+      {
+        'id'              : bearerDid.uri,
+        'type'            : 'DecentralizedWebNode',
+        'serviceEndpoint' : [dwnEndpoint],
+        'enc'             : '#enc',
+        'sig'             : '#sig'
+      }
+    ];
+    await Did.publish(bearerDid);
+    const portableDid = await bearerDid.export();
+    await FileSystem.write(`${dataPath}/did.json`, JSON.stringify(bearerDid, null, 2));
+    await FileSystem.write(`${dataPath}/portable-did.json`, JSON.stringify(portableDid, null, 2));
+    Logger.info(`DID Created Succesfully: ${dataPath}`);
+    Logger.info('Keep portable-did.json private and safe');
+    Logger.info('Host did.json in a public location (e.g. mywebsite.com/.well-known/did.json)');
   }
 
-  public static async publish() {
-    throw new Error('Not implemented');
+  public static async publish(did: BearerDid, gatewayUri?: string) {
+    gatewayUri ??= 'https://diddht.tbddev.org';
+    await DidDht.publish({ did, gatewayUri });
+    Logger.info('Published DID Successfully');
   }
 
   public static async resolve(didUri: string, options?: DidResolutionOptions) {
