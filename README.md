@@ -10,12 +10,15 @@ To add web5 to your project or to build a DWA (decentralized web app) with web5,
 
 ## Quick Install
 
-To install `tool5`, run the following commands
+To install `tool5`, run one of the following commands
+
+1. Clone
+```sh
+git clone git@github.com:bnonni/tool5.git && cd tool5 && npm run cli:install
+```
+2. Script
 ```bash
-git clone git@github.com:bnonni/tool5.git
-cd tool5
-npm run install:cli
-tool5 -h
+wget https://raw.githubusercontent.com/bnonni/tool5/main/install-tool5.sh | sh
 ```
 
 ## Step-by-step Install
