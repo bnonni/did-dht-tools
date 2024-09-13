@@ -11,3 +11,7 @@
 // const { web5 } = await Web5.connect({ agent, password, didCreateOptions: { dwnEndpoints } });
 // import { Web5 } from '@web5/api';
 // import { Web5UserAgent } from '@web5/user-agent';
+
+export class Agent {
+
+}

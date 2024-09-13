@@ -1,14 +1,31 @@
-import { FileSystem, Logger } from '@dcx-protocol/common';
-import { BearerDid, DidDht, DidResolutionOptions } from '@web5/dids';
+import { FileSystem, Logger, stringifier } from '@dcx-protocol/common';
+import { BearerDid, DidDht } from '@web5/dids';
 import crypto from 'crypto';
 import { mkdir } from 'fs/promises';
+import { DidUtils } from './utils.js';
 
-export class Did {
-  public static async create(dwnEndpoint?: string, dataPath?: string) {
-    dwnEndpoint ??= 'https://dwn.tbddev.org/beta';
-    dataPath ??= `out/${crypto.randomUUID().toUpperCase()}`;
-    if(dataPath){
-      await mkdir(dataPath, { recursive: true });
+type OptionalDidOptions = { out?: string; gatewayUri?: string };
+
+export class Did extends DidUtils {
+  protected static logPortableDid() {
+    Logger.security('portable-did.json: CONTAINS PRIVATE KEYS! Keep it private and safe!');
+  }
+
+  protected static logDid(out?: string) {
+    out ??= './out/did/';
+    Logger.info('did.json: Publicly available. Host it in .well-know: mywebsite.com/.well-known/did.json');
+    Logger.info(`DID document saved to ${out}/did.json`);
+  }
+
+  protected static logBoth(out?: string) {
+    Did.logPortableDid();
+    Did.logDid(out);
+  }
+
+  public static async create(out: string, dwnEndpoint?: string) {
+    dwnEndpoint ??= 'https://dwn.nonni.org/';
+    if(out){
+      await mkdir(out, { recursive: true });
     }
     const bearerDid = await DidDht.create();
     bearerDid.document.service = [
@@ -20,23 +37,34 @@ export class Did {
         'sig'             : '#sig'
       }
     ];
-    await Did.publish(bearerDid);
+    await Did.publish(bearerDid, { out });
     const portableDid = await bearerDid.export();
-    await FileSystem.write(`${dataPath}/did.json`, JSON.stringify(bearerDid, null, 2));
-    await FileSystem.write(`${dataPath}/portable-did.json`, JSON.stringify(portableDid, null, 2));
-    Logger.info(`DID Created Succesfully: ${dataPath}`);
-    Logger.info('Keep portable-did.json private and safe');
-    Logger.info('Host did.json in a public location (e.g. mywebsite.com/.well-known/did.json)');
+    await Did.writeDidDocument(out, bearerDid.document);
+    await FileSystem.write(`${out}/portable-did.json`, stringifier(portableDid));
+    Logger.info(`DID ${portableDid.uri} Created Succesfully`);
+    Did.logBoth(out);
   }
 
-  public static async publish(did: BearerDid, gatewayUri?: string) {
+  public static async publish(did: string | BearerDid, { out, gatewayUri }: OptionalDidOptions) {
+    out ??= `out/did/publish/${crypto.randomUUID().toUpperCase()}`;
     gatewayUri ??= 'https://diddht.tbddev.org';
-    await DidDht.publish({ did, gatewayUri });
-    Logger.info('Published DID Successfully');
+    const portableDid = did instanceof BearerDid
+      ? await Did.publishBearer({ did, gatewayUri, out })
+      : await Did.publishFromPath({ didPath: did, out, gatewayUri });
+    Logger.info(`Published DID ${portableDid.uri} Successfully`);
+    Did.logDid(out);
   }
 
-  public static async resolve(didUri: string, options?: DidResolutionOptions) {
-    options ??= {};
-    DidDht.resolve(didUri, options);
+  public static async resolve(didUri: string, { out, gatewayUri }: OptionalDidOptions) {
+    out ??= `out/did/resolve/${crypto.randomUUID().toUpperCase()}`;
+    gatewayUri ??= 'https://diddht.tbddev.org';
+    const didResolution = await DidDht.resolve(didUri, { gatewayUri });
+    const { didResolutionMetadata, didDocument, didDocumentMetadata } = didResolution;
+    await FileSystem.write(`${out}/didResolution.json`, stringifier(didResolution));
+    await FileSystem.write(`${out}/didResolutionMetadata.json`, stringifier(didResolutionMetadata));
+    await FileSystem.write(`${out}/didDocumentMetadata.json`, stringifier(didDocumentMetadata));
+    await Did.writeDidDocument(out, didDocument);
+    Logger.info(`Resolved DID ${didUri} Successfully`);
+    Did.logDid(out);
   }
 }

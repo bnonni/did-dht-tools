@@ -1,5 +1,5 @@
 {
-  "name": "cli-tool5",
+  "name": "tool5-cli",
   "version": "0.0.2",
   "type": "module",
   "description": "CLI tools for interacting with Web5",
@@ -9,10 +9,12 @@
   },
   "scripts": {
     "start": "npm run build && node dist/web5-tools.js",
+    "wipe": "rm -rf dist node_modules",
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc && mv dist/tool5.js dist/tool5.mjs",
+    "build": "npm run clean && tsc",
     "did:create": "npm run build && node dist/web5-tools.js -p did -a create",
-    "install:cli": "sh install-cli.sh",
+    "cli:install": "sh install-tool5.sh",
+    "cli:uninstall": "rm -rf dist node_modules",
     "update:outdated": "ncu --install always -u"
   },
   "repository": {

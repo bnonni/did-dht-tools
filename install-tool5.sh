@@ -2,13 +2,15 @@
 
 set -e
 
-DIST="$PWD/dist"
-TOOL5="$DIST/tool5"
+DIST="$PWD/dist/esm"
 TOOL5_JS="$DIST/tool5.js"
-NODE_MODULES="$PWD/node_modules/"
+TOOL5_EXEC="$DIST/tool5"
+NODE_MODULES="$PWD/node_modules"
 SHELL_FILE=""
 FORCE=false
 NODE_HOME=`command -v node`
+
+alias tool5="$NODE_HOME $TOOL5_EXEC"
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -34,6 +36,7 @@ check_build () {
     if [ ! -f "$TOOL5_JS" ]; then
         echo "No build detected, building ..."
         npm run build
+        mv $TOOL5_JS $TOOL5_EXEC
     else
         echo "Build detected, skipping build ..."
     fi
@@ -41,8 +44,8 @@ check_build () {
 
 check_shell () {
     case "$SHELL" in
-        */bash) SHELL_FILE="$HOME/.bashrc";;
-        */zsh) SHELL_FILE="$HOME/.zshrc";;
+        */bash) SHELL_FILE="$HOME/.bash_profile";;
+        */zsh) SHELL_FILE="$HOME/.zshenv";;
         */sh) SHELL_FILE="$HOME/.profile";;
         */ksh) SHELL_FILE="$HOME/.kshrc";;
         */fish) SHELL_FILE="$HOME/.config/fish/config.fish";;
@@ -58,8 +61,8 @@ check_shell () {
 
 check_install () {
     echo "Checking for tool5 install ..."
-    IS_INSTALLED_CHECK_2="$(cat $SHELL_FILE | grep 'alias tool5' | wc -l | awk '{$1=$1;print}')"
-    if [[ -f "$TOOL5" || "$IS_INSTALLED_CHECK_2" -gt 0 ]]; then
+    IS_INSTALLED_CHECK="$(cat $SHELL_FILE | grep 'alias tool5' | wc -l | awk '{$1=$1;print}')"
+    if [[ -f "$TOOL5_EXEC" && "$IS_INSTALLED_CHECK" -gt 0 ]]; then
         echo "ERROR: Install failed, tool5 already installed!"
         tool5 -h
         exit 0
@@ -69,12 +72,12 @@ check_install () {
 install_tool5 () {
     check_install
     echo "Installing tool5 ..."
-    mv "$TOOL5_JS" "$TOOL5"
-    chmod u+x "$TOOL5"
-    echo $'\n'"alias tool5=\"$NODE_HOME $TOOL5\"" >> "$SHELL_FILE"
+    chmod u+x "$TOOL5_EXEC"
+    cp "$SHELL_FILE" "$SHELL_FILE.bak"
+    echo $'\n'"alias tool5=\"$NODE_HOME $TOOL5_EXEC\"" >> "$SHELL_FILE"
     source "$SHELL_FILE"
     echo "Installed tool5 successfully!"
-    tool5 --help
+    tool5 -h
 }
 
 check_dependencies
