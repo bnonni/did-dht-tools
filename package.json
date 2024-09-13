@@ -12,7 +12,7 @@
     "clean": "rimraf dist",
     "build": "npm run clean && tsc && mv dist/tool5.js dist/tool5.mjs",
     "did:create": "npm run build && node dist/web5-tools.js -p did -a create",
-    "install:cli": "sh install-cli.sh",
+    "install:cli": "sh install-tool5.sh",
     "outdated:update": "ncu --install always"
   },
   "repository": {
@@ -27,13 +27,13 @@
   "homepage": "https://github.com/bnonni/tool5#readme",
   "dependencies": {
     "@dcx-protocol/common": "^7.0.0",
-    "@web5/agent": "^0.4.1",
+    "@web5/agent": "^0.7.3",
     "@web5/api": "^0.10.0",
     "@web5/common": "^1.0.2",
     "@web5/credentials": "^1.1.1",
     "@web5/crypto": "^1.0.4",
     "@web5/dids": "^1.1.4",
-    "@web5/user-agent": "^0.6.1",
+    "@web5/user-agent": "^0.6.3",
     "commander": "^12.1.0",
     "ed25519-keygen": "^0.6.2"
   },
@@ -41,14 +41,14 @@
     "@eslint/js": "^9.10.0",
     "@types/node": "^22.5.4",
     "@types/readable-stream": "^4.0.15",
-    "@typescript-eslint/eslint-plugin": "^8.4.0",
-    "@typescript-eslint/parser": "^8.4.0",
+    "@typescript-eslint/eslint-plugin": "^8.5.0",
+    "@typescript-eslint/parser": "^8.5.0",
     "dotenv": "^16.4.5",
     "eslint": "^9.10.0",
     "globals": "^15.9.0",
     "npm-check-updates": "^17.1.1",
     "rimraf": "^6.0.1",
-    "tsx": "^4.19.0",
-    "typescript": "^5.5.4"
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2"
   }
 }

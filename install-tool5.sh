@@ -73,7 +73,7 @@ install_tool5 () {
     echo $'\n'"alias tool5=\"`which node` $TOOL5\"" >> "$SHELL_FILE"
     source "$SHELL_FILE"
     echo "Installed tool5 successfully!"
-    tool5 --help
+    `which tool5` --help
 }
 
 check_dependencies

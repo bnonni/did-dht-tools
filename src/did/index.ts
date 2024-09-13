@@ -8,7 +8,7 @@ export class Did {
 
   public static async create() {
     const password = process.env.PASSWORD ?? Mnemonic.createPassword();
-    const dwnEndpoints = process.env.DWN_ENDPOINTS?.split(',') ?? ['https://dwn.tbddev.org/beta'];
+    const dwnEndpoints = process.env.DWN_ENDPOINTS?.split(',') ?? ['https://dwn.nonni.org/'];
 
     const dataPath = crypto.randomUUID().toUpperCase();
     const newOutDir = `out/${dataPath}`;
