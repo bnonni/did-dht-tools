@@ -21,6 +21,24 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+clone_repo () {
+    # Check if the current directory is a git repo
+    if [ -d ".git" ]; then
+        # Check if the remote origin is the correct repo
+        repo_url=$(git config --get remote.origin.url)
+        if echo "$repo_url" | grep -qE '^https:\/\/github\.com\/[^\/]+\/tool5(\.git)?$|^git@github\.com:[^\/]+\/tool5(\.git)?$'; then
+            echo "Already in the tool5 repo, skipping clone."
+        else
+            echo "The current directory is a git repo, but not tool5. Exiting."
+            exit 1
+        fi
+    else
+        # If not a git repo, clone the tool5 repo
+        git clone git@github.com:bnonni/tool5.git
+        cd tool5
+    fi
+}
+
 check_dependencies () {
     echo "Checking dependencies ..."
     if [ ! -d "$NODE_MODULES" ]; then
@@ -72,6 +90,7 @@ check_install () {
 install_tool5 () {
     check_install
     echo "Installing tool5 ..."
+    mv $TOOL5_JS $TOOL5_EXEC
     chmod u+x "$TOOL5_EXEC"
     cp "$SHELL_FILE" "$SHELL_FILE.bak"
     echo $'\n'"alias tool5=\"$NODE_HOME $TOOL5_EXEC\"" >> "$SHELL_FILE"
@@ -80,6 +99,7 @@ install_tool5 () {
     tool5 -h
 }
 
+clone_repo
 check_dependencies
 check_build
 check_shell

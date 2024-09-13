@@ -1,6 +1,6 @@
 {
   "name": "tool5-cli",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "type": "module",
   "description": "CLI tools for interacting with Web5",
   "main": "dist/tool5.js",
