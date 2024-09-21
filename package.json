@@ -1,18 +1,18 @@
 {
   "name": "tool5",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "type": "module",
   "description": "CLI tools for interacting with Web5",
-  "main": "dist/tool5.js",
+  "main": "dist/esm/tool5.js",
   "bin": {
-    "tool5": "dist/tool5.js"
+    "tool5": "dist/esm/tool5.js"
   },
   "scripts": {
-    "start": "npm run build && node dist/web5-tools.js",
+    "start": "npm run build && node dist/esm/tool5.js",
     "wipe": "rm -rf dist node_modules",
     "clean": "rimraf dist",
     "build": "npm run clean && tsc",
-    "did:create": "npm run build && node dist/web5-tools.js -p did -a create",
+    "did:create": "npm run build && node dist/esm/tool5.js -p did -a create",
     "cli:install": "sh install-tool5.sh",
     "cli:uninstall": "rm -rf dist node_modules",
     "update:outdated": "ncu --install always -u"
