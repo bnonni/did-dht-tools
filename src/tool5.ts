@@ -5,6 +5,7 @@ import { program } from 'commander';
 import { Did } from './did/index.js';
 import { Dwn } from './dwn/index.js';
 import { Vc } from './vc/index.js';
+import { DidUtils } from './did/utils.js';
 
 program
   .command('did')
@@ -15,7 +16,6 @@ program
   .option('-g, --gateway <gatewayUri>', 'optional gateway URI for publish/resolve')
   .option('-d, --did <did>', 'DID for publish/resolve actions')
   .action(async ({ action, out, endpoint, gateway, did }) => {
-    out ??= `out/did/create/${crypto.randomUUID().toUpperCase()}`;
     endpoint ??= 'https://dwn.nonni.org/';
     gateway ??= 'https://diddht.tbddev.org';
     switch(action) {
@@ -25,10 +25,12 @@ program
         break;
       case 'publish':
         Logger.log(`Publishing ${did}: options={out: ${out}, gateway: ${gateway}}`);
+        out ??= `out/did/publish/${crypto.randomUUID().toUpperCase()}`;
         await Did.publish(did, { out, gatewayUri: gateway });
         break;
       case 'resolve':
         Logger.log(`Resolving ${did}: options={out: ${out}, gateway: ${gateway}}`);
+        out ??= `out/did/resolve/${crypto.randomUUID().toUpperCase()}`;
         await Did.resolve(did, { out, gatewayUri: gateway });
         break;
       default:

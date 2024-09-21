@@ -1,5 +1,6 @@
 import { Logger, stringifier, FileSystem } from '@dcx-protocol/common';
-import { BearerDid, DidDht, DidDocument } from '@web5/dids';
+import { BearerDid, DidDht, DidDocument, PortableDid } from '@web5/dids';
+import { mkdir } from 'fs/promises';
 
 type PublishBearerParams = { did: BearerDid; gatewayUri: string; out: string; }
 type PublishFromPathParams = { didPath: string, out: string; gatewayUri?: string }
@@ -23,6 +24,21 @@ export class DidUtils {
     await FileSystem.write(`${out}/didDocumentMetadata.json`, stringifier(didDocumentMetadata));
     await DidUtils.writeDidDocument(out, didDocument);
     return did;
+  }
+
+  protected static async writeDidCreation(out: string, portableDid: PortableDid){
+    await mkdir(out, { recursive: true });
+    await FileSystem.write(`${out}/portable-did.json`, stringifier(portableDid));
+    await DidUtils.writeDidDocument(out, portableDid.document);
+  }
+
+  protected static async writeDidResolution(out: string, didResolution: any){
+    await mkdir(out, { recursive: true });
+    const { didResolutionMetadata, didDocument, didDocumentMetadata } = didResolution;
+    await FileSystem.write(`${out}/didResolution.json`, stringifier(didResolution));
+    await FileSystem.write(`${out}/didResolutionMetadata.json`, stringifier(didResolutionMetadata));
+    await FileSystem.write(`${out}/didDocumentMetadata.json`, stringifier(didDocumentMetadata));
+    await DidUtils.writeDidDocument(out, didDocument);
   }
 
   protected static async writeDidDocument(out: string, didDoc: DidDocument | null){

@@ -7,6 +7,8 @@ import { DidUtils } from './utils.js';
 type OptionalDidOptions = { out?: string; gatewayUri?: string };
 
 export class Did extends DidUtils {
+  public static out: string = crypto.randomUUID().toUpperCase();
+
   protected static logPortableDid() {
     Logger.security('portable-did.json: CONTAINS PRIVATE KEYS! Keep it private and safe!');
   }
@@ -23,10 +25,8 @@ export class Did extends DidUtils {
   }
 
   public static async create(out: string, dwnEndpoint?: string) {
+    out ??= `out/did/create/${out}`;
     dwnEndpoint ??= 'https://dwn.nonni.org/';
-    if(out){
-      await mkdir(out, { recursive: true });
-    }
     const bearerDid = await DidDht.create();
     bearerDid.document.service = [
       {
@@ -39,31 +39,25 @@ export class Did extends DidUtils {
     ];
     await Did.publish(bearerDid, { out });
     const portableDid = await bearerDid.export();
-    await Did.writeDidDocument(out, bearerDid.document);
-    await FileSystem.write(`${out}/portable-did.json`, stringifier(portableDid));
+    await DidUtils.writeDidCreation(out, portableDid);
     Logger.info(`DID ${portableDid.uri} Created Succesfully`);
     Did.logBoth(out);
   }
 
   public static async publish(did: string | BearerDid, { out, gatewayUri }: OptionalDidOptions) {
-    out ??= `out/did/publish/${crypto.randomUUID().toUpperCase()}`;
     gatewayUri ??= 'https://diddht.tbddev.org';
     const portableDid = did instanceof BearerDid
-      ? await Did.publishBearer({ did, gatewayUri, out })
-      : await Did.publishFromPath({ didPath: did, out, gatewayUri });
+      ? await Did.publishBearer({ did, gatewayUri, out: `out/did/publish/${out}` })
+      : await Did.publishFromPath({ didPath: did, out: `out/did/publish/${did}`, gatewayUri });
     Logger.info(`Published DID ${portableDid.uri} Successfully`);
     Did.logDid(out);
   }
 
   public static async resolve(didUri: string, { out, gatewayUri }: OptionalDidOptions) {
-    out ??= `out/did/resolve/${crypto.randomUUID().toUpperCase()}`;
+    out ??= `out/did/resolve/${didUri}`;
     gatewayUri ??= 'https://diddht.tbddev.org';
     const didResolution = await DidDht.resolve(didUri, { gatewayUri });
-    const { didResolutionMetadata, didDocument, didDocumentMetadata } = didResolution;
-    await FileSystem.write(`${out}/didResolution.json`, stringifier(didResolution));
-    await FileSystem.write(`${out}/didResolutionMetadata.json`, stringifier(didResolutionMetadata));
-    await FileSystem.write(`${out}/didDocumentMetadata.json`, stringifier(didDocumentMetadata));
-    await Did.writeDidDocument(out, didDocument);
+    await Did.writeDidResolution(out, didResolution);
     Logger.info(`Resolved DID ${didUri} Successfully`);
     Did.logDid(out);
   }
