@@ -1,8 +1,7 @@
-import { FileSystem, Logger, stringifier } from '@dcx-protocol/common';
 import { BearerDid, DidDht } from '@web5/dids';
 import crypto from 'crypto';
-import { mkdir } from 'fs/promises';
-import { DidUtils } from './utils.js';
+import { DidUtils } from '../utils/did-utils.js';
+import { Logger } from '../index.js';
 
 type OptionalDidOptions = { out?: string; gatewayUri?: string };
 

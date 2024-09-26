@@ -1,17 +1,31 @@
 {
   "name": "tool5",
   "version": "1.1.2",
+  "description": "CLI tool for interacting with Web5",
   "type": "module",
-  "description": "CLI tools for interacting with Web5",
-  "main": "dist/esm/tool5.js",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/src/index.js",
+  "types": "./dist/types/index.d.ts",
   "bin": {
-    "tool5": "dist/esm/tool5.js"
+    "tool5": "./dist/cjs/tool5.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/esm/src/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./tool5": {
+      "import": "./dist/esm/tool5.js",
+      "require": "./dist/cjs/tool5.js"
+    }
   },
   "scripts": {
     "start": "npm run build && node dist/esm/tool5.js",
     "wipe": "rm -rf dist node_modules",
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build:cjs": "rimraf dist/cjs && node build/cjs-bundle.js && echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
+    "build:esm": "rimraf dist/esm dist/types && tsc -p tsconfig.json",
     "did:create": "npm run build && node dist/esm/tool5.js -p did -a create",
     "cli:install": "sh install-tool5.sh",
     "cli:uninstall": "rm -rf dist node_modules",
@@ -28,7 +42,6 @@
   },
   "homepage": "https://github.com/bnonni/tool5#readme",
   "dependencies": {
-    "@dcx-protocol/common": "^7.0.0",
     "@web5/agent": "^0.6.1",
     "@web5/api": "^0.10.0",
     "@web5/common": "^1.0.2",
@@ -36,6 +49,7 @@
     "@web5/crypto": "^1.0.4",
     "@web5/dids": "^1.1.4",
     "@web5/user-agent": "^0.5.1",
+    "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "ed25519-keygen": "^0.6.2"
   },

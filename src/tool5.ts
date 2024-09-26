@@ -1,11 +1,8 @@
-#!/usr/bin/env node
-
-import { Logger } from '@dcx-protocol/common';
+import { Logger } from './index.js';
 import { program } from 'commander';
-import { Did } from './did/index.js';
-import { Dwn } from './dwn/index.js';
-import { Vc } from './vc/index.js';
-import { DidUtils } from './did/utils.js';
+import { Did } from './primitives/did.js';
+import { Dwn } from './primitives/dwn.js';
+import { Vc } from './primitives/vc.js';
 
 program
   .command('did')
