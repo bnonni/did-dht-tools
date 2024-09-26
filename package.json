@@ -7,7 +7,7 @@
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
   "bin": {
-    "tool5": "./dist/cjs/tool5.js"
+    "tool5": "./dist/esm/tool5.js"
   },
   "exports": {
     ".": {
