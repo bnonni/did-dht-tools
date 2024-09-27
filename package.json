@@ -6,9 +6,7 @@
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
-  "bin": {
-    "tool5": "./dist/esm/tool5.js"
-  },
+  "bin": "./dist/esm/tool5.js",
   "exports": {
     ".": {
       "import": "./dist/esm/index.js",
@@ -26,7 +24,8 @@
     "did:create": "npm run build && node dist/esm/tool5.js -p did -a create",
     "cli:install": "sh install-tool5.sh",
     "cli:uninstall": "rm -rf dist node_modules",
-    "update:outdated": "ncu --install always -u"
+    "update:outdated": "ncu --install always -u",
+    "prepare": "npm run build && chmod +x ./dist/esm/tool5.js"
   },
   "repository": {
     "type": "git",

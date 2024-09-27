@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { Logger } from './index.js';
 import { program } from 'commander';
 import { Did } from './primitives/did.js';
