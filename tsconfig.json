@@ -17,6 +17,7 @@
     "eslint.config.cjs",
     "DATA",
     "out",
-    "node_modules"
+    "node_modules",
+    "tests"
   ]
 }
