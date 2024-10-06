@@ -27,6 +27,10 @@ export class Logger implements Partial<Console> {
     ? ['debug', ...DEFAULT_LEVELS]
     :  DEFAULT_LEVELS;
 
+  public static success(message?: unknown, ...args: unknown[]): void {
+    console.debug(chalk.green('success') + ':', message, ...args);
+  }
+
   public static debug(message?: unknown, ...args: unknown[]): void {
     console.debug(chalk.green('debug') + ':', message, ...args);
   }

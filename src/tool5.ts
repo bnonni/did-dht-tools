@@ -1,38 +1,39 @@
 #!/usr/bin/env node
-import { Logger } from './index.js';
 import { program } from 'commander';
+import { Agent, Logger, stringifier } from './index.js';
 import { Did } from './primitives/did.js';
 import { Dwn } from './primitives/dwn.js';
 import { Vc } from './primitives/vc.js';
+
+export const TOOL5_HOME = process.env.TOOL5_HOME ?? `${process.env.HOME}/.tool5`;
 
 program
   .command('did')
   .description('Interact with DIDs (Decentralized Identifiers)')
   .option('-a, --action <create|publish|resolve>', 'action to take on the DID')
-  .option('-o, --out <path>', 'optional output path for files')
   .option('-e, --endpoint <dwnEndpoint>', 'optional DWN endpoint for DID creation')
   .option('-g, --gateway <gatewayUri>', 'optional gateway URI for publish/resolve')
+  .option('-o, --out <out>', 'optional output directory for publish/resolve actions')
   .option('-d, --did <did>', 'DID for publish/resolve actions')
-  .action(async ({ action, out, endpoint, gateway, did }) => {
-    endpoint ??= 'https://dwn.nonni.org/';
+  .action(async ({ action, endpoint, gateway, out, did }) => {
+    endpoint ??= 'https://dwn.tbddev.org/beta';
     gateway ??= 'https://diddht.tbddev.org';
+    out ??= `${TOOL5_HOME}/did/${action}`;
     switch(action) {
       case 'create':
-        Logger.log(`Creating ${did ?? 'did'}: options={out: ${out}, endpoint: ${endpoint}}`);
-        await Did.create(out, endpoint);
+        Logger.log(`Creating new did with params ${stringifier({ endpoint, gateway, out })}`);
+        await Did.create({ endpoint, gateway, out });
         break;
       case 'publish':
-        Logger.log(`Publishing ${did}: options={out: ${out}, gateway: ${gateway}}`);
-        out ??= `out/did/publish/${crypto.randomUUID().toUpperCase()}`;
-        await Did.publish(did, { out, gatewayUri: gateway });
+        Logger.log(`Publishing did ${did} with params ${stringifier({ did, gateway, out })}`);
+        await Did.publish({ did, gateway, out });
         break;
       case 'resolve':
-        Logger.log(`Resolving ${did}: options={out: ${out}, gateway: ${gateway}}`);
-        out ??= `out/did/resolve/${crypto.randomUUID().toUpperCase()}`;
-        await Did.resolve(did, { out, gatewayUri: gateway });
+        Logger.log(`Resolving did ${did} with params ${stringifier({ did, gateway, out })}`);
+        await Did.resolve({ did, gateway, out });
         break;
       default:
-        Logger.log('Invalid action for did: must be one of create, publish or resolve');
+        throw new Error(`Invalid did action ${action}: must be one of create, publish or resolve`);
     }
   });
 
@@ -41,11 +42,9 @@ program
   .command('vc')
   .description('Interact with Verifiable Credentials (VCs)')
   .option('-a, --action <create|verify>', 'action to take on the VC')
-  .option('-o, --out <path>', 'optional output path for files')
   .option('-d, --data <data>', 'VC data for creation or verification')
-  .action(async (options) => {
-    const { action, out, data } = options;
-    Logger.log('out', out);
+  .action(async ({ action, data }) => {
+    Logger.log('action', action);
     Logger.log('data', data);
     switch(action) {
       case 'create':
@@ -57,7 +56,7 @@ program
         await Vc.verify();
         break;
       default:
-        Logger.log('Invalid action for vc: must be one of create or verify');
+        throw new Error(`Invalid vc action ${action}: must be one of create or verify`);
     }
   });
 
@@ -68,8 +67,7 @@ program
   .option('-a, --action <create|read|update|delete>', 'action to take on the DWN')
   .option('-e, --endpoint <uri>', 'URI of the DWN resource')
   .option('-d, --data <data>', 'data for create/update actions')
-  .action(async (options) => {
-    const { action, endpoint, data } = options;
+  .action(async ({ action, endpoint, data }) => {
     Logger.log('endpoint', endpoint);
     Logger.log('data', data);
     switch(action) {
@@ -90,8 +88,29 @@ program
         await Dwn.delete();
         break;
       default:
-        Logger.log('Invalid action for dwn: must be one of create, read, update, or delete');
+        throw new Error(`Invalid dwn action ${action}: must be one of create, read, update, or delete`);
     }
   });
+
+
+// DWN subcommand
+program
+  .command('agent')
+  .description('Interact with Web5 Agents')
+  .option('-a, --action <create>', 'action to take on the Agent')
+  .option('-p, --path <dataPath>', 'Agent data path')
+  .action(async ({ action, path }) => {
+    Logger.log('action', action);
+    Logger.log('path', path);
+    switch(action) {
+      case 'create':
+        Logger.log('Creating a web5 agent');
+        await Agent.create();
+        break;
+      default:
+        throw new Error(`Invalid agent action ${action}: must be create`);
+    }
+  });
+
 
 program.parse();
