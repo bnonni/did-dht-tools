@@ -125,14 +125,10 @@ export class Files {
 
   public static async write(path: string, data: string): Promise<boolean> {
     try {
-      const exists = await Files.exists(path);
-      if (!exists) {
-        const file = await open(path, 'w', 0o700);
-        await file.writeFile(data, 'utf-8');
-        await file.close();
-        return true;
-      }
-      return false;
+      const file = await open(path, 'w', 0o700);
+      await file.writeFile(data, 'utf-8');
+      await file.close();
+      return true;
     } catch (error: any) {
       Logger.error(`Failed to write ${path}`, error);
       return false;
