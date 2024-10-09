@@ -1,7 +1,7 @@
 {
   "name": "tool5",
   "version": "5.0.0",
-  "description": "CLI tool for interacting with Web5",
+  "description": "Basic web5-js cli tool",
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",

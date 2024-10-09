@@ -4,8 +4,13 @@ import { Agent, Logger, stringifier } from './index.js';
 import { Did } from './primitives/did.js';
 import { Dwn } from './primitives/dwn.js';
 import { Vc } from './primitives/vc.js';
+import { join } from 'path';
+import { readFile } from 'fs/promises';
+const packageJson = JSON.parse(await readFile(join(process.cwd(), 'package.json'), 'utf8'));
 
 export const TOOL5_HOME = process.env.TOOL5_HOME ?? `${process.env.HOME}/.tool5`;
+
+program.version(`${packageJson.name} ${packageJson.version}\n${packageJson.description}`, '-v, --version', 'Output the current version');
 
 program
   .command('did')
