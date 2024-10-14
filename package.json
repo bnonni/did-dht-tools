@@ -1,6 +1,6 @@
 {
-  "name": "tool5",
-  "version": "5.0.0",
+  "name": "@dpm/tool5",
+  "version": "5.0.1",
   "description": "CLI tool for interacting with Web5",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -9,6 +9,7 @@
   "bin": "./dist/esm/tool5.js",
   "exports": {
     ".": {
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js"
     },
