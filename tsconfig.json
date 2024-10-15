@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "rootDir": "./src",
+    "rootDir": "src",
     "allowJs": false,
     "strict": true,
     "declaration": true,
@@ -13,6 +13,9 @@
     "resolveJsonModule": true,
     "skipLibCheck": true
   },
+  "include": [
+    "src"
+  ],
   "exclude": [
     "eslint.config.cjs",
     "DATA",

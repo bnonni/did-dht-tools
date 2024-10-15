@@ -1,7 +1,8 @@
 import { PortableDid } from '@web5/dids';
 import { Did } from '../src/index.js';
 
-const TOOL5_HOME = process.env.TOOL5_HOME ?? `${process.env.HOME}/.tool5`;
+import version from '../src/bin/version.js';
+const {TOOL5_HOME} = version;
 const gateway = 'https://diddht.tbddev.org';
 const out = `${TOOL5_HOME}/did/publish`;
 const portableDid = {

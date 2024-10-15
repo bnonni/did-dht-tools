@@ -1,3 +1,4 @@
+export * from './version.js';
 export * from './utils/logger.js';
 export * from './utils/files.js';
 export * from './primitives/agent.js';

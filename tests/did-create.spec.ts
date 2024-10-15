@@ -1,6 +1,6 @@
 import { Did } from '../src/index.js';
-
-const TOOL5_HOME = process.env.TOOL5_HOME ?? `${process.env.HOME}/.tool5`;
+import version from '../src/bin/version.js';
+const {TOOL5_HOME} = version;
 
 const endpoint = 'https://dwn.tbddev.org/beta';
 const gateway = 'https://diddht.tbddev.org';

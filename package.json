@@ -6,27 +6,27 @@
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
-  "bin": "./dist/esm/bin/tool5.js",
+  "bin": "./dist/esm/tool5.js",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
       "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
-    },
-    "./package.json": "./package.json"
+      "require": "./dist/cjs/index.js",
+      "package.json": "./package.json"
+    }
   },
   "scripts": {
-    "start": "npm run build && node dist/esm/bin/tool5.js",
+    "start": "npm run build && node dist/esm/tool5.js",
     "wipe": "rm -rf dist node_modules",
     "clean": "rimraf dist",
     "build": "npm run build:cjs && npm run build:esm",
     "build:cjs": "rimraf dist/cjs && tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
-    "build:esm": "rimraf dist/esm dist/types && tsc -p tsconfig.esm.json",
-    "did:create": "npm run build && node dist/esm/bin/tool5.js -p did -a create",
+    "build:esm": "rimraf dist/esm dist/types && tsc -p tsconfig.esm.json && cp package.json dist/package.json",
+    "did:create": "npm run build && node dist/esm/tool5.js -p did -a create",
     "cli:install": "sh install-tool5.sh",
     "cli:uninstall": "rm -rf dist node_modules",
     "update:outdated": "ncu --install always -u",
-    "prepare": "npm run build && chmod +x ./dist/esm/bin/tool5.js"
+    "prepare": "npm run build && chmod +x ./dist/esm/tool5.js"
   },
   "repository": {
     "type": "git",

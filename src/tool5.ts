@@ -1,14 +1,10 @@
 #!/usr/bin/env node
 import { program } from 'commander';
-import packageJson from '../../package.json';
-import { Agent, Logger, stringifier } from '../index.js';
-import { Did } from '../primitives/did.js';
-import { Dwn } from '../primitives/dwn.js';
-import { Vc } from '../primitives/vc.js';
+import { Agent, Logger, stringifier, Dwn, Vc, Did } from './index.js';
+import version from './version.js';
 
-export const TOOL5_HOME = process.env.TOOL5_HOME ?? `${process.env.HOME}/.tool5`;
-
-program.version(`${packageJson.name} ${packageJson.version}\n${packageJson.description}`, '-v, --version', 'Output the current version');
+const {NAME, VERSION, DESC, TOOL5_HOME} = version;
+program.version(`${NAME} ${VERSION}\n${DESC}`, '-v, --version', 'Output the current version');
 
 program
   .command('did')
