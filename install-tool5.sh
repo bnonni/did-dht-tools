@@ -3,7 +3,7 @@
 set -e
 
 DIST="$PWD/dist/esm"
-TOOL5_JS="$DIST/tool5.js"
+TOOL5_JS="$DIST/bin/tool5.js"
 TOOL5_EXEC="$DIST/tool5"
 NODE_MODULES="$PWD/node_modules"
 SHELL_FILE=""

@@ -27,6 +27,6 @@ esbuild.build({
   format: 'cjs',
   sourcemap: true,
   platform: 'node',
-  outfile: 'dist/cjs/tool5.js',
+  outfile: 'dist/cjs/bin/tool5.js',
   allowOverwrite: true,
 });
