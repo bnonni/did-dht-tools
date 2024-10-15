@@ -1,12 +1,10 @@
 #!/usr/bin/env node
 import { program } from 'commander';
-import { Agent, Logger, stringifier } from './index.js';
-import { Did } from './primitives/did.js';
-import { Dwn } from './primitives/dwn.js';
-import { Vc } from './primitives/vc.js';
-import { join } from 'path';
-import { readFile } from 'fs/promises';
-const packageJson = JSON.parse(await readFile(join(process.cwd(), 'package.json'), 'utf8'));
+import packageJson from '../../package.json';
+import { Agent, Logger, stringifier } from '../index.js';
+import { Did } from '../primitives/did.js';
+import { Dwn } from '../primitives/dwn.js';
+import { Vc } from '../primitives/vc.js';
 
 export const TOOL5_HOME = process.env.TOOL5_HOME ?? `${process.env.HOME}/.tool5`;
 
