@@ -11,8 +11,7 @@
     ".": {
       "types": "./dist/types/index.d.ts",
       "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "package.json": "./package.json"
+      "require": "./dist/cjs/index.js"
     }
   },
   "scripts": {
@@ -21,7 +20,7 @@
     "clean": "rimraf dist",
     "build": "npm run build:cjs && npm run build:esm",
     "build:cjs": "rimraf dist/cjs && tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
-    "build:esm": "rimraf dist/esm dist/types && tsc -p tsconfig.esm.json && cp package.json dist/package.json",
+    "build:esm": "rimraf dist/esm dist/types && tsc -p tsconfig.json && cp package.json dist/package.json",
     "did:create": "npm run build && node dist/esm/tool5.js -p did -a create",
     "cli:install": "sh install-tool5.sh",
     "cli:uninstall": "rm -rf dist node_modules",

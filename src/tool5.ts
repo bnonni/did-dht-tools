@@ -1,115 +1,98 @@
 #!/usr/bin/env node
 import { program } from 'commander';
 import { Agent, Logger, stringifier, Dwn, Vc, Did } from './index.js';
-import version from './version.js';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+import { readFileSync } from 'fs';
+import { homedir, platform } from 'os';
 
-const {NAME, VERSION, DESC, TOOL5_HOME} = version;
-program.version(`${NAME} ${VERSION}\n${DESC}`, '-v, --version', 'Output the current version');
+const TOOL5_DIR = 'tool5';
+const TOOL5_HOME = platform() === 'win32'
+  ? join(process.env.APPDATA || join(homedir(), 'AppData', 'Roaming'), TOOL5_DIR)
+  : join(process.env.XDG_CONFIG_HOME || join(homedir(), '.config'), TOOL5_DIR);
 
-program
-  .command('did')
-  .description('Interact with DIDs (Decentralized Identifiers)')
-  .option('-a, --action <create|publish|resolve>', 'action to take on the DID')
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const packageJsonPath = join(__dirname, '..', '..', 'package.json');
+const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8')).catch(Logger.error);
+
+// tool5
+const tool5 = program.version(`tool5 ${packageJson.version}\nCLI tool5 for interacting with Web5`, '-v, --version', 'Output the current version');
+
+// DID
+const did = tool5.command('did').description('Interact with DIDs (Decentralized Identifiers)');
+did.command('create')
+  .description('Create a new DID')
   .option('-e, --endpoint <dwnEndpoint>', 'optional DWN endpoint for DID creation')
   .option('-g, --gateway <gatewayUri>', 'optional gateway URI for publish/resolve')
   .option('-o, --out <out>', 'optional output directory for publish/resolve actions')
-  .option('-d, --did <did>', 'DID for publish/resolve actions')
-  .action(async ({ action, endpoint, gateway, out, did }) => {
+  .action(async ({ endpoint, gateway, out }) => {
     endpoint ??= 'https://dwn.tbddev.org/beta';
     gateway ??= 'https://diddht.tbddev.org';
-    out ??= `${TOOL5_HOME}/did/${action}`;
-    switch(action) {
-      case 'create':
-        Logger.log(`Creating new did with params ${stringifier({ endpoint, gateway, out })}`);
-        await Did.create({ endpoint, gateway, out });
-        break;
-      case 'publish':
-        Logger.log(`Publishing did ${did} with params ${stringifier({ did, gateway, out })}`);
-        await Did.publish({ did, gateway, out });
-        break;
-      case 'resolve':
-        Logger.log(`Resolving did ${did} with params ${stringifier({ did, gateway, out })}`);
-        await Did.resolve({ did, gateway, out });
-        break;
-      default:
-        throw new Error(`Invalid did action ${action}: must be one of create, publish or resolve`);
-    }
+    out ??= `${TOOL5_HOME}/did/create`;
+    Logger.log(`Creating new did with params ${stringifier({ endpoint, gateway, out })}`);
+    await Did.create({ endpoint, gateway, out });
+  });
+did.command('resolve')
+  .description('Resolve an existing DID')
+  .option('-d, --did <did>', 'DID for publish/resolve actions')
+  .option('-g, --gateway <gatewayUri>', 'optional gateway URI for publish/resolve')
+  .option('-o, --out <out>', 'optional output directory for publish/resolve actions')
+  .action(async ({ did, gateway, out }) => {
+    gateway ??= 'https://diddht.tbddev.org';
+    out ??= `${TOOL5_HOME}/did/resolve`;
+    Logger.log(`Creating new did with params ${stringifier({ did, gateway, out })}`);
+    await Did.resolve({ did, gateway, out });
+  });
+did.command('publish')
+  .description('Publish a DID')
+  .option('-d, --did <did>', 'DID for publish/resolve actions')
+  .option('-e, --endpoint <dwnEndpoint>', 'optional DWN endpoint for DID creation')
+  .option('-g, --gateway <gatewayUri>', 'optional gateway URI for publish/resolve')
+  .option('-o, --out <out>', 'optional output directory for publish/resolve actions')
+  .action(async ({ did, gateway, out }) => {
+    gateway ??= 'https://diddht.tbddev.org';
+    out ??= `${TOOL5_HOME}/did/publish`;
+    Logger.log(`Creating new did with params ${stringifier({ did, gateway, out })}`);
+    await Did.publish({ did, gateway, out });
   });
 
-// VC subcommand
-program
-  .command('vc')
-  .description('Interact with Verifiable Credentials (VCs)')
-  .option('-a, --action <create|verify>', 'action to take on the VC')
+// VC
+const vc = tool5.command('vc').description('Interact with Verifiable Credentials (VCs)');
+vc.command('create')
+  .description('Create a new Verifiable Credential')
   .option('-d, --data <data>', 'VC data for creation or verification')
-  .action(async ({ action, data }) => {
-    Logger.log('action', action);
-    Logger.log('data', data);
-    switch(action) {
-      case 'create':
-        Logger.log('Creating a VC');
-        await Vc.create();
-        break;
-      case 'verify':
-        Logger.log('Verifying a VC');
-        await Vc.verify();
-        break;
-      default:
-        throw new Error(`Invalid vc action ${action}: must be one of create or verify`);
-    }
-  });
+  .action(Vc.create);
+vc.command('verify')
+  .description('Verify an existing VC')
+  .option('-d, --data <data>', 'VC data for verification')
+  .action(Vc.verify);
 
-// DWN subcommand
-program
-  .command('dwn')
-  .description('Interact with Decentralized Web Nodes (DWNs)')
-  .option('-a, --action <create|read|update|delete>', 'action to take on the DWN')
+// DWN
+const dwn = tool5.command('dwn').description('Interact with Decentralized Web Nodes (DWNs)');
+const records = dwn.command('records').description('Interact with DWN records');
+records.command('create')
+  .description('Create new DWN record(s)')
   .option('-e, --endpoint <uri>', 'URI of the DWN resource')
   .option('-d, --data <data>', 'data for create/update actions')
-  .action(async ({ action, endpoint, data }) => {
-    Logger.log('endpoint', endpoint);
-    Logger.log('data', data);
-    switch(action) {
-      case 'create':
-        Logger.log('Creating a dwn record');
-        await Dwn.create();
-        break;
-      case 'read':
-        Logger.log('Reading a dwn record');
-        await Dwn.read();
-        break;
-      case 'update':
-        Logger.log('Updating a dwn record');
-        await Dwn.update();
-        break;
-      case 'delete':
-        Logger.log('Deleting a dwn record');
-        await Dwn.delete();
-        break;
-      default:
-        throw new Error(`Invalid dwn action ${action}: must be one of create, read, update, or delete`);
-    }
-  });
+  .action(Dwn.create);
+records.command('read')
+  .description('Read DWN records')
+  .option('-e, --endpoint <uri>', 'URI of the DWN resource')
+  .action(Dwn.read);
+records.command('update')
+  .description('Update DWN record(s)')
+  .option('-d, --data <data>', 'data for create/update actions')
+  .action(Dwn.update);
+records.command('delete')
+  .description('Delete DWN record(s)')
+  .action(Dwn.delete);
 
-
-// DWN subcommand
-program
-  .command('agent')
-  .description('Interact with Web5 Agents')
-  .option('-a, --action <create>', 'action to take on the Agent')
+// Agent
+const agent = tool5.command('agent').description('Interact with Web5 Agent(s)');
+agent.command('create')
+  .description('Create a new Web5 Agent')
   .option('-p, --path <dataPath>', 'Agent data path')
-  .action(async ({ action, path }) => {
-    Logger.log('action', action);
-    Logger.log('path', path);
-    switch(action) {
-      case 'create':
-        Logger.log('Creating a web5 agent');
-        await Agent.create();
-        break;
-      default:
-        throw new Error(`Invalid agent action ${action}: must be create`);
-    }
-  });
+  .action(Agent.create);
 
 
-program.parse();
+tool5.parse();
